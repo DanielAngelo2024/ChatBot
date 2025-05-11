@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import scrolledtext
 from PIL import Image, ImageTk
-from backend import carregar_dados_csv, gerar_resposta, fazer_pergunta
+from backend import carregar_dados_csv, gerar_resposta
 
 class ChatBotGUI:
     def __init__(self, root):
@@ -18,7 +18,7 @@ class ChatBotGUI:
         header_frame = tk.Frame(root, bg="#1e1e2f")
         header_frame.pack(pady=10, fill=tk.X)
 
-        caminho_logo = os.path.join(os.path.dirname(__file__), "img", "logo.png")
+        caminho_logo = os.path.join(os.path.dirname(__file__), "Docs", "logo.png")
 
         try:
             if os.path.exists(caminho_logo):
@@ -52,7 +52,7 @@ class ChatBotGUI:
         self.send_button = tk.Button(bottom_frame, text="Enviar", font=("Segoe UI", 12), bg="#4CAF50", fg="white", command=self.enviar_pergunta)
         self.send_button.pack(side=tk.RIGHT)
 
-        self.exibir_mensagem("Bot", "  Olá! Meu nomé é SMART, o mecânico inteligente. Me pergunte sobre modelos de carros e seus filtros.")
+        self.exibir_mensagem("Bot", "  Olá! Meu nomé é SMART, o mecânico inteligente. Me pergunte sobre modelos de carros e seus filtros. Digite 'x' para sair.")
 
     def exibir_mensagem(self, remetente, texto):
         self.chat_area.config(state=tk.NORMAL)
@@ -71,11 +71,11 @@ class ChatBotGUI:
         if pergunta.lower() == 'x':
             self.root.quit()
             return
-        
-        ''' self.mensagens.append(("user", pergunta))
+
+        self.mensagens.append(("user", pergunta))
         resposta = gerar_resposta(self.mensagens, self.documento_csv)
         self.mensagens.append(("assistant", resposta))
-        self.exibir_mensagem("Bot", resposta)'''
+        self.exibir_mensagem("Bot", resposta)
 
 
 if __name__ == "__main__":

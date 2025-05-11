@@ -49,7 +49,6 @@ def gerar_resposta(mensagem, documento):
 mensagens = []
 
 def fazer_pergunta(pergunta):
-    
     while True:
         pergunta = input("Usuário: ")
         if pergunta.lower() == "x":
@@ -61,5 +60,4 @@ def fazer_pergunta(pergunta):
         mensagens.append(("user", pergunta))
         resposta = gerar_resposta(mensagens, carregar_dados_csv)
         mensagens.append(("assistant", resposta))
-        return resposta
-print("Fim")
+        print(f"Bot:  {resposta}")
