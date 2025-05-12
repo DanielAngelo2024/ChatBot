@@ -1,78 +1,63 @@
 import os
-import tkinter as tk
-from tkinter import scrolledtext
+import customtkinter as ctk
 from PIL import Image, ImageTk
 from backend import carregar_dados_csv, gerar_resposta
 
-class ChatBotGUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Mecânico Inteligente")
-        self.root.geometry("800x600")
-        self.root.configure(bg="#1e1e2f")
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("blue")
+
+class ChatBotGUI(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Mecânico Inteligente")
+        self.geometry("900x700")
+        self.configure(bg="#d0d0d0")
 
         self.mensagens = []
         self.documento_csv = carregar_dados_csv()
 
-        # --- Cabeçalho com logo ---
-        header_frame = tk.Frame(root, bg="#1e1e2f")
-        header_frame.pack(pady=10, fill=tk.X)
+        # Cabeçalho 
+        header = ctk.CTkFrame(self, fg_color="#303030", corner_radius=15)
+        header.pack(pady=15, padx=15, fill="x")
 
-        caminho_logo = os.path.join(os.path.dirname(__file__), "img", "logo.png")
+        logo_path = os.path.join(os.path.dirname(__file__), "img", "topo_wega.png")
+        if os.path.exists(logo_path):
+            img = Image.open(logo_path).resize((80, 80))
+            self.logo = ImageTk.PhotoImage(img)
+            logo_label = ctk.CTkLabel(header, image=self.logo, text="")
+            logo_label.pack(side="left", padx=20, pady=10)
 
-        try:
-            if os.path.exists(caminho_logo):
-                imagem = Image.open(caminho_logo)
-                imagem = imagem.resize((100, 100), Image.ANTIALIAS)
-                self.logo = ImageTk.PhotoImage(imagem)
-                tk.Label(header_frame, image=self.logo, bg="#1e1e2f").pack()
-            else:
-                raise FileNotFoundError("logo.png não encontrado na pasta Docs.")
-        except Exception as e:
-            print(f"Erro ao carregar a imagem: {e}")
-            tk.Label(header_frame, text="Buscador de Filtros", font=("Segoe UI", 20), bg="#1e1e2f", fg="white").pack()
+        text_frame = ctk.CTkFrame(header, fg_color="transparent")
+        text_frame.pack(side="left", padx=10)
+        ctk.CTkLabel(text_frame, text="Mecânico Inteligente", font=("Segoe UI", 26, "bold"), text_color="white").pack(anchor="w")
+        ctk.CTkLabel(text_frame, text="Seu assistente para escolha de peças automotivas", font=("Segoe UI", 14), text_color="#bbbbbb").pack(anchor="w")
 
-        # --- Frame principal da interface ---
-        main_frame = tk.Frame(root, bg="#1e1e2f")
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        # Área do chat
+        chat_frame = ctk.CTkFrame(self, fg_color="#f4f4f4", corner_radius=15)
+        chat_frame.pack(padx=20, pady=(10, 0), fill="both", expand=True)
 
-        # --- Área de texto (chat) com estilo mais suave ---
-        self.chat_area = scrolledtext.ScrolledText(
-            main_frame,
-            wrap=tk.WORD,
-            bg="#2e2e3e",
-            fg="white",
-            font=("Segoe UI", 12),
-            height=20,
-            bd=0,
-            relief=tk.FLAT,
-            padx=10,
-            pady=10
-        )
-        self.chat_area.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
-        self.chat_area.config(state=tk.DISABLED)
+        self.chat_area = ctk.CTkTextbox(chat_frame, font=("Segoe UI", 13), text_color="#000000", wrap="word", state="disabled", corner_radius=10, fg_color="white")
+        self.chat_area.pack(padx=15, pady=15, fill="both", expand=True)
 
-        # --- Frame de entrada ---
-        bottom_frame = tk.Frame(root, bg="#1e1e2f")
-        bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=(10, 10))
+        # Entrada do usuário
+        bottom_frame = ctk.CTkFrame(self, fg_color="transparent")
+        bottom_frame.pack(padx=20, pady=20, fill="x")
 
-        self.entry = tk.Entry(bottom_frame, font=("Segoe UI", 12), bg="#3e3e4e", fg="white", insertbackground="white", relief=tk.FLAT)
-        self.entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
+        self.entry = ctk.CTkEntry(bottom_frame, placeholder_text="Digite sua pergunta...", font=("Segoe UI", 13))
+        self.entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
         self.entry.bind("<Return>", self.enviar_pergunta)
 
-        self.send_button = tk.Button(bottom_frame, text="Enviar", font=("Segoe UI", 12), bg="#4CAF50", fg="white", relief=tk.FLAT, command=self.enviar_pergunta)
-        self.send_button.pack(side=tk.RIGHT)
+        self.send_button = ctk.CTkButton(bottom_frame, text="Enviar", command=self.enviar_pergunta)
+        self.send_button.pack(side="right")
 
-        self.exibir_mensagem("Bot", "  Olá! Meu nomé é Guru dos filtros, seu melhor assistente para identificar filtros. Me pergunte sobre modelos de carros e seus filtros. Digite 'x' para sair.")
-        self.exibir_mensagem("Bot", "Por favor ao inserir uma pergunta tente ser claro e objetivo pois ainda estou aprendendo sobre a línguagem humana")
+        self.exibir_mensagem("Bot", "Olá! Meu nome é SMART, o mecânico inteligente. Me pergunte sobre modelos de carros e seus filtros. Digite 'x' para sair.")
 
     def exibir_mensagem(self, remetente, texto):
-        self.chat_area.config(state=tk.NORMAL)
-        if remetente == "Bot":
-            remetente += " 🔧"
-        self.chat_area.insert(tk.END, f"{remetente}: {texto}\n\n")
-        self.chat_area.config(state=tk.DISABLED)
-        self.chat_area.yview(tk.END)
+        self.chat_area.configure(state="normal")
+        self.chat_area.insert("end", f"{remetente}: {texto}\n\n")
+        self.chat_area.configure(state="disabled")
+        self.chat_area.yview_moveto(1.0)
 
     def enviar_pergunta(self, event=None):
         pergunta = self.entry.get().strip()
@@ -80,10 +65,10 @@ class ChatBotGUI:
             return
 
         self.exibir_mensagem("Você", pergunta)
-        self.entry.delete(0, tk.END)
+        self.entry.delete(0, "end")
 
         if pergunta.lower() == 'x':
-            self.root.quit()
+            self.destroy()
             return
 
         self.mensagens.append(("user", pergunta))
@@ -91,8 +76,6 @@ class ChatBotGUI:
         self.mensagens.append(("assistant", resposta))
         self.exibir_mensagem("Bot", resposta)
 
-
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = ChatBotGUI(root)
-    root.mainloop()
+    app = ChatBotGUI()
+    app.mainloop() 
