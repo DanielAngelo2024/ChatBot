@@ -18,7 +18,7 @@ class ChatBotGUI:
         header_frame = tk.Frame(root, bg="#1e1e2f")
         header_frame.pack(pady=10, fill=tk.X)
 
-        caminho_logo = os.path.join(os.path.dirname(__file__), "Docs", "logo.png")
+        caminho_logo = os.path.join(os.path.dirname(__file__), "img", "logo.png")
 
         try:
             if os.path.exists(caminho_logo):
@@ -30,32 +30,46 @@ class ChatBotGUI:
                 raise FileNotFoundError("logo.png não encontrado na pasta Docs.")
         except Exception as e:
             print(f"Erro ao carregar a imagem: {e}")
-            tk.Label(header_frame, text="Mecânico Inteligente", font=("Segoe UI", 20), bg="#1e1e2f", fg="white").pack()
+            tk.Label(header_frame, text="Buscador de Filtros", font=("Segoe UI", 20), bg="#1e1e2f", fg="white").pack()
 
         # --- Frame principal da interface ---
         main_frame = tk.Frame(root, bg="#1e1e2f")
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # --- Área de texto (chat) com altura fixa ---
-        self.chat_area = scrolledtext.ScrolledText(main_frame, wrap=tk.WORD, bg="#2e2e3e", fg="white", font=("Segoe UI", 12), height=20)
-        self.chat_area.pack(side=tk.TOP, fill=tk.BOTH, expand=False)  # Removido expand=True
+        # --- Área de texto (chat) com estilo mais suave ---
+        self.chat_area = scrolledtext.ScrolledText(
+            main_frame,
+            wrap=tk.WORD,
+            bg="#2e2e3e",
+            fg="white",
+            font=("Segoe UI", 12),
+            height=20,
+            bd=0,
+            relief=tk.FLAT,
+            padx=10,
+            pady=10
+        )
+        self.chat_area.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
         self.chat_area.config(state=tk.DISABLED)
 
         # --- Frame de entrada ---
         bottom_frame = tk.Frame(root, bg="#1e1e2f")
         bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=(10, 10))
 
-        self.entry = tk.Entry(bottom_frame, font=("Segoe UI", 12), bg="#3e3e4e", fg="white", insertbackground="white")
+        self.entry = tk.Entry(bottom_frame, font=("Segoe UI", 12), bg="#3e3e4e", fg="white", insertbackground="white", relief=tk.FLAT)
         self.entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
         self.entry.bind("<Return>", self.enviar_pergunta)
 
-        self.send_button = tk.Button(bottom_frame, text="Enviar", font=("Segoe UI", 12), bg="#4CAF50", fg="white", command=self.enviar_pergunta)
+        self.send_button = tk.Button(bottom_frame, text="Enviar", font=("Segoe UI", 12), bg="#4CAF50", fg="white", relief=tk.FLAT, command=self.enviar_pergunta)
         self.send_button.pack(side=tk.RIGHT)
 
-        self.exibir_mensagem("Bot", "  Olá! Meu nomé é SMART, o mecânico inteligente. Me pergunte sobre modelos de carros e seus filtros. Digite 'x' para sair.")
+        self.exibir_mensagem("Bot", "  Olá! Meu nomé é Guru dos filtros, seu melhor assistente para identificar filtros. Me pergunte sobre modelos de carros e seus filtros. Digite 'x' para sair.")
+        self.exibir_mensagem("Bot", "Por favor ao inserir uma pergunta tente ser claro e objetivo pois ainda estou aprendendo sobre a línguagem humana")
 
     def exibir_mensagem(self, remetente, texto):
         self.chat_area.config(state=tk.NORMAL)
+        if remetente == "Bot":
+            remetente += " 🔧"
         self.chat_area.insert(tk.END, f"{remetente}: {texto}\n\n")
         self.chat_area.config(state=tk.DISABLED)
         self.chat_area.yview(tk.END)
