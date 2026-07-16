@@ -43,5 +43,5 @@ graph TD
 
 Desenvolvido por **\[Daniel Ângelo\]**.
 
-*Conecte-se comigo no [LinkedIn](www.linkedin.com/in/daniel-angelo-software-engineer) ou explore mais do meu portfólio no [GitHub](https://github.com/DanielAngelo2024?tab=repositories).*
+*Conecte-se comigo no [LinkedIn](https://www.linkedin.com/in/daniel-angelo-software-engineer/) ou explore mais do meu portfólio no [GitHub](https://github.com/DanielAngelo2024?tab=repositories).*
 
